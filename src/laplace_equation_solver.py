@@ -38,4 +38,15 @@ class LaplaceEquationSolver:
             the wires and in the empty space between the wires, while the field V always gives V(x, y) = 0 if (x, y)
             is not a point belonging to an electric wire.
         """
+
+        (x,y) = constant_voltage.shape
+        Fils = constant_voltage != 0
+        voltage_iter = np.zeros((x+2,y+2))
+
+        voltage_iter[1:-1, 1:-1] = constant_voltage
+
+        for i in range(10000):
+            voltage_iter[1:-1, 1:-1] = (voltage_iter[1:-1, 2:]+voltage_iter[1:-1, :-2]+voltage_iter[2:, 1:-1]+voltage_iter[:-2, 1:-1])/4
+            voltage_iter[1:-1, 1:-1][Fils==True] = 0
+
         raise NotImplementedError
