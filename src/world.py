@@ -137,6 +137,9 @@ class World:
 
             self._electric_field = -self._potential.gradient()
 
+            Biot_sol = BiotSavartEquationSolver()
+            self._magnetic_field = Biot_sol.solve(self._wires_current)
+
     def show_wires_voltage(self):
         """
         Shows wires' voltage field.

@@ -1,7 +1,7 @@
 import numpy as np
 from scipy.constants import mu_0, pi
 
-from src.fields import VectorField
+from src.fields import ScalarField, VectorField
 
 
 class BiotSavartEquationSolver:
@@ -29,10 +29,42 @@ class BiotSavartEquationSolver:
             B_x = B_y = 0 is always True in our 2D world.
         """
 
-        Fils_Hor = np.where(electric_current.x != 0)
+        Fils_x = np.argwhere(electric_current.x != 0)
+        Fils_y = np.argwhere(electric_current.y != 0)
+        Elem_x = len(Fils_x)
+        Elem_y = len(Fils_y)
         #donne deux arrays (x et y) qui sont les coordonnées des fils
-        Fils_Vert = np.where(electric_current.y != 0)
-        #donne deux arrays (x et y) qui sont les coordonnées des fils
+        (x,y) = electric_current.x.shape
+        Mag = np.zeros((x,y,3))
+        B = 0
 
-        
-        raise NotImplementedError
+        for i in range(x):
+            for j in range(y):
+                B = 0
+                for k_x in range(Elem_x):
+                    dl_x = Fils_x[k_x][0]
+                    dl_y = Fils_x[k_x][1]
+                    r_x = dl_x - i
+                    r_y = dl_y - j
+                    I = electric_current[dl_x, dl_y]
+                    r = np.sqrt(abs(r_x)^2 + abs(r_y)^2)
+                    if r == 0:
+                        B += 0
+                        continue
+                    B += ((I[0]*r_x) - (I[1]*r_y))/(r**3)
+                for k_y in range(Elem_y):
+                    dl_x = Fils_y[k_y][0]
+                    dl_y = Fils_y[k_y][1]
+                    r_x = dl_x - i
+                    r_y = dl_y - j
+                    I = electric_current[dl_x, dl_y]
+                    r = np.sqrt(abs(r_x)^2 + abs(r_y)^2)
+                    if r == 0:
+                        B += 0
+                        continue
+                    B += ((I[0]*r_x) - (I[1]*r_y))/(r**3)
+                Mag[i,j,2] = B
+
+        out = VectorField(Mag)
+
+        return out
