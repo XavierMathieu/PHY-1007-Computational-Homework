@@ -45,8 +45,17 @@ class LaplaceEquationSolver:
 
         voltage_iter[1:-1, 1:-1] = constant_voltage
 
-        for i in range(10000):
+        i=True
+        Voltage = voltage_iter[1:-1, 1:-1]
+
+        while i:
+            past = voltage_iter
             voltage_iter[1:-1, 1:-1] = (voltage_iter[1:-1, 2:]+voltage_iter[1:-1, :-2]+voltage_iter[2:, 1:-1]+voltage_iter[:-2, 1:-1])/4
             voltage_iter[1:-1, 1:-1][Fils==True] = 0
+            voltage_iter[1:-1, 1:-1] = voltage_iter[1:-1, 1:-1] + constant_voltage
+            change = np.max(voltage_iter - past)
+            if change < 0.01:
+                Voltage = voltage_iter[1:-1, 1:-1]
+                i = False
 
-        raise NotImplementedError
+        return Voltage
