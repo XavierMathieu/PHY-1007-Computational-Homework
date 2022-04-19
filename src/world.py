@@ -135,6 +135,8 @@ class World:
             lapl_sol = LaplaceEquationSolver(nb_relaxation_iterations)
             self._potential = lapl_sol.solve(self._wires_voltage)
 
+            self._electric_field = -self._potential.gradient()
+
     def show_wires_voltage(self):
         """
         Shows wires' voltage field.
