@@ -51,7 +51,7 @@ class BiotSavartEquationSolver:
                     if r == 0:
                         B += 0
                         continue
-                    B += ((I[0]*r_x) - (I[1]*r_y))/(r**3)
+                    B += ((I[0]*r_y) - (I[1]*r_x))/(r**3)
                 for k_y in range(Elem_y):
                     dl_x = Fils_y[k_y][0]
                     dl_y = Fils_y[k_y][1]
@@ -62,8 +62,8 @@ class BiotSavartEquationSolver:
                     if r == 0:
                         B += 0
                         continue
-                    B += ((I[0]*r_x) - (I[1]*r_y))/(r**3)
-                Mag[i,j,2] = B
+                    B += ((I[0]*r_y) - (I[1]*r_x))/(r**3)
+                Mag[i,j,2] = (mu_0*B)/(4*pi)
 
         out = VectorField(Mag)
 
