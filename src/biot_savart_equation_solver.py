@@ -29,11 +29,42 @@ class BiotSavartEquationSolver:
             B_x = B_y = 0 is always True in our 2D world.
         """
 
-        Fils_x = np.argwhere(electric_current.x != 0)
+        Fils_x = np.argwhere(electric_current.x.swapaxes(1,0) != 0)
+        coor = None
+        Elem_x = []
+        for i in Fils_x:
+            i_x, i_y = i[1], i[0]
+            if coor == None:
+                coor = i_y
+                Bout1 = i_x
+            elif i_y == coor:
+                Bout2 = i_x
+                continue
+            elif i_y != coor:
+                Elem_x += [(Bout1, Bout2, coor, electric_current.x[Bout1, coor])]
+                coor = i_y
+                Bout1 = i_x
+        Elem_x += [(Bout1, Bout2, coor, electric_current.x[Bout1, coor])]
+        print(Elem_x)
+
         Fils_y = np.argwhere(electric_current.y != 0)
-        Elem_x = len(Fils_x)
-        Elem_y = len(Fils_y)
-        #donne deux arrays (x et y) qui sont les coordonnées des fils
+        coor = None
+        Elem_y = []
+        for i in Fils_y:
+            i_x, i_y = i[0], i[1]
+            if coor == None:
+                coor = i_x
+                Bout1 = i_y
+            elif i_x == coor:
+                Bout2 = i_y
+                continue
+            elif i_x != coor:
+                Elem_y += [(Bout1, Bout2, coor, electric_current.y[Bout1, coor])]
+                coor = i_x
+                Bout1 = i_y
+        Elem_y += [(Bout1, Bout2, coor, electric_current.y[Bout1, coor])]
+        print(Elem_y)
+
         (x,y) = electric_current.x.shape
         Mag = np.zeros((x,y,3))
         B = 0
@@ -41,29 +72,29 @@ class BiotSavartEquationSolver:
         for i in range(x):
             for j in range(y):
                 B = 0
-                for k_x in range(Elem_x):
-                    dl_x = Fils_x[k_x][0]
-                    dl_y = Fils_x[k_x][1]
-                    r_x = dl_x - i
-                    r_y = dl_y - j
-                    I = electric_current[dl_x, dl_y]
-                    r = np.sqrt(abs(r_x)^2 + abs(r_y)^2)
-                    if r == 0:
+                for I_x in Elem_x:
+                    I_hor = I_x[3]
+                    delta_y = (I_x[0][1] - j)
+                    if delta_y == 0:
                         B += 0
                         continue
-                    B += ((I[0]*r_y) - (I[1]*r_x))/(r**3)
-                for k_y in range(Elem_y):
-                    dl_x = Fils_y[k_y][0]
-                    dl_y = Fils_y[k_y][1]
-                    r_x = dl_x - i
-                    r_y = dl_y - j
-                    I = electric_current[dl_x, dl_y]
-                    r = np.sqrt(abs(r_x)^2 + abs(r_y)^2)
-                    if r == 0:
+                    delta_x_1 = (I_x[0][0] - j)
+                    angle_1 = np.arctan(delta_x_1/delta_y)
+                    delta_x_2 = (I_x[1][0] - j)
+                    angle_2 = np.arctan(delta_x_2/delta_y)
+                    B += (I_hor/delta_y)*(np.sin(angle_2) - np.sin(angle_1))
+
+                for I_y in Elem_y:
+                    I_ver = I_y[3]
+                    delta_x = (I_y[0][0] - j)
+                    if delta_x == 0:
                         B += 0
                         continue
-                    B += ((I[0]*r_y) - (I[1]*r_x))/(r**3)
-                Mag[i,j,2] = (mu_0*B)/(4*pi)
+                    delta_y_1 = (I_y[0][1] - j)
+                    angle_1 = np.arctan(delta_y_1/delta_x)
+                    delta_y_2 = (I_y[1][1] - j)
+                    angle_2 = np.arctan(delta_y_2/delta_x)
+                    B += (I_ver/delta_x)*(np.sin(angle_2) - np.sin(angle_1))
 
         out = VectorField(Mag)
 
