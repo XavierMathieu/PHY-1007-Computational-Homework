@@ -45,7 +45,6 @@ class BiotSavartEquationSolver:
                 coor = i_y
                 Bout1 = i_x
         Elem_x += [(Bout1, Bout2, coor, electric_current.x[Bout1, coor])]
-        print(Elem_x)
 
         Fils_y = np.argwhere(electric_current.y != 0)
         coor = None
@@ -63,7 +62,6 @@ class BiotSavartEquationSolver:
                 coor = i_x
                 Bout1 = i_y
         Elem_y += [(Bout1, Bout2, coor, electric_current.y[coor, Bout1])]
-        print(Elem_y)
 
         (x,y) = electric_current.x.shape
         Mag = np.zeros((x,y,3))
