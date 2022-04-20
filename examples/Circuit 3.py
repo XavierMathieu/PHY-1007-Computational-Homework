@@ -4,15 +4,15 @@ from src import Circuit, Current, Wire, World
 
 
 if __name__ == "__main__":
-    world = World(shape=(121, 121))
+    world = World(shape=(141, 141))
 
     wires = [
-        Wire(start=(9, 34), stop=(9, 85), current=Current(x=0, y=1), voltage=4.5),
-        Wire(start=(9, 85), stop=(100, 85), current=Current(x=1, y=0), voltage=4.5),
-        Wire(start=(100, 85), stop=(110, 85), current=Current(x=1, y=0), voltage=-4.5),
-        Wire(start=(110, 85), stop=(110, 34), current=Current(x=0, y=-1), voltage=-4.5),
-        Wire(start=(110, 34), stop=(100, 34), current=Current(x=-1, y=0), voltage=-4.5),
-        Wire(start=(100, 34), stop=(9, 34), current=Current(x=-1, y=0), voltage=4.5),
+        Wire(start=(19, 44), stop=(19, 95), current=Current(x=0, y=1), voltage=4.5),
+        Wire(start=(19, 95), stop=(110, 95), current=Current(x=1, y=0), voltage=4.5),
+        Wire(start=(110, 95), stop=(120, 95), current=Current(x=1, y=0), voltage=-4.5),
+        Wire(start=(120, 95), stop=(120, 44), current=Current(x=0, y=-1), voltage=-4.5),
+        Wire(start=(120, 44), stop=(110, 44), current=Current(x=-1, y=0), voltage=-4.5),
+        Wire(start=(110, 44), stop=(19, 44), current=Current(x=-1, y=0), voltage=4.5),
     ]
 
     circuit = Circuit(wires=wires)
