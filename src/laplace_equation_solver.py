@@ -49,7 +49,6 @@ class LaplaceEquationSolver:
         Voltage = voltage_iter[1:-1, 1:-1]
 
         for i in range(self.nb_iterations):
-            past = voltage_iter
             voltage_iter[1:-1, 1:-1] = (voltage_iter[1:-1, 2:]+voltage_iter[1:-1, :-2]+voltage_iter[2:, 1:-1]+voltage_iter[:-2, 1:-1])/4
             voltage_iter[1:-1, 1:-1][Fils==True] = 0
             voltage_iter[1:-1, 1:-1] = voltage_iter[1:-1, 1:-1] + constant_voltage
