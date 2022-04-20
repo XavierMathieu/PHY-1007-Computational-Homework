@@ -59,42 +59,43 @@ class BiotSavartEquationSolver:
                 Bout2 = i_y
                 continue
             elif i_x != coor:
-                Elem_y += [(Bout1, Bout2, coor, electric_current.y[Bout1, coor])]
+                Elem_y += [(Bout1, Bout2, coor, electric_current.y[coor, Bout1])]
                 coor = i_x
                 Bout1 = i_y
-        Elem_y += [(Bout1, Bout2, coor, electric_current.y[Bout1, coor])]
+        Elem_y += [(Bout1, Bout2, coor, electric_current.y[coor, Bout1])]
         print(Elem_y)
 
         (x,y) = electric_current.x.shape
         Mag = np.zeros((x,y,3))
         B = 0
 
+
         for i in range(x):
             for j in range(y):
                 B = 0
                 for I_x in Elem_x:
                     I_hor = I_x[3]
-                    delta_y = (I_x[0][1] - j)
+                    delta_y = (I_x[2] - j)
                     if delta_y == 0:
-                        B += 0
                         continue
-                    delta_x_1 = (I_x[0][0] - j)
+                    delta_x_1 = (I_x[0] - i)
                     angle_1 = np.arctan(delta_x_1/delta_y)
-                    delta_x_2 = (I_x[1][0] - j)
+                    delta_x_2 = (I_x[1] - i)
                     angle_2 = np.arctan(delta_x_2/delta_y)
-                    B += (I_hor/delta_y)*(np.sin(angle_2) - np.sin(angle_1))
+                    B += -(I_hor/abs(delta_y))*(np.sin(angle_2) - np.sin(angle_1))
 
                 for I_y in Elem_y:
                     I_ver = I_y[3]
-                    delta_x = (I_y[0][0] - j)
+                    delta_x = (I_y[2] - i)
                     if delta_x == 0:
                         B += 0
                         continue
-                    delta_y_1 = (I_y[0][1] - j)
+                    delta_y_1 = (I_y[0] - j)
                     angle_1 = np.arctan(delta_y_1/delta_x)
-                    delta_y_2 = (I_y[1][1] - j)
+                    delta_y_2 = (I_y[1] - j)
                     angle_2 = np.arctan(delta_y_2/delta_x)
-                    B += (I_ver/delta_x)*(np.sin(angle_2) - np.sin(angle_1))
+                    B += (I_ver/abs(delta_x))*(np.sin(angle_2) - np.sin(angle_1))
+                Mag[i,j,2] = (mu_0*B)/(4*pi)
 
         out = VectorField(Mag)
 

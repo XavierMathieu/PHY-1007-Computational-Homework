@@ -140,7 +140,7 @@ class World:
             Biot_sol = BiotSavartEquationSolver()
             self._magnetic_field = Biot_sol.solve(self._wires_current)
 
-            self._energy_flux = (self._magnetic_field.cross(self._electric_field))/mu_0
+            self._energy_flux = (self._electric_field.cross(self._magnetic_field))/mu_0
 
     def show_wires_voltage(self):
         """
